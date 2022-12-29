@@ -16,7 +16,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  SOURCE_CODE_PATH: src
+  SOURCE_CODE_PATH: src/
 
 jobs:
   build-and-push-image:
