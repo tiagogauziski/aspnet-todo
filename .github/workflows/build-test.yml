@@ -10,11 +10,13 @@ on:
     branches: [ "main" ]
 
 env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
   SOURCE_CODE_PATH: src/
   DOTNET_VERSION: '7.x'
 
 jobs:
-  build:
+  build-and-test:
     defaults:
       run:
         working-directory: ${{ env.SOURCE_CODE_PATH }}
@@ -32,6 +34,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
   build-and-push-image:
+    needs: build-and-test
     runs-on: ubuntu-latest
     permissions:
       contents: read
