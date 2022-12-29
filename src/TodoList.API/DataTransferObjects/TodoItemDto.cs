@@ -1,4 +1,4 @@
-﻿namespace TodoList.API.Contracts
+﻿namespace TodoList.API.DataTransferObjects
 {
     public class TodoItemDto
     {

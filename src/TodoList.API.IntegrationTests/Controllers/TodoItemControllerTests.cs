@@ -1,5 +1,5 @@
 ﻿using Azure.Core;
-using TodoList.API.Contracts;
+using TodoList.API.DataTransferObjects;
 using TodoList.API.Infrastructure.Database;
 using TodoList.API.Models;
 

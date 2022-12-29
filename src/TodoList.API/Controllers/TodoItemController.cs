@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TodoList.API.Contracts;
+using TodoList.API.DataTransferObjects;
 using TodoList.API.Infrastructure.Database;
 using TodoList.API.Models;
 
