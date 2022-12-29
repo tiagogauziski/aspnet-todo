@@ -20,6 +20,9 @@ env:
 
 jobs:
   build-and-push-image:
+    defaults:
+      run:
+        working-directory: ${{ env.SOURCE_CODE_PATH }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -45,7 +48,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
-          context: ${{ env.SOURCE_CODE_PATH }}
+          context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
