@@ -2,6 +2,12 @@
 
 The goal of this application is to implement a simple RESTFul API for a TODO application. 
 
+# Docker
+- Install the application using the following command:
+```
+docker pull ghcr.io/tiagogauziski/aspnet-todo:main
+```
+
 ## Helpful commands
 
 ### Run SQL Server as Docker container

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: aspnet-todo
+  name: aspnet-todo-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aspnet-todo-api
+  template:
+    metadata:
+      labels:
+        app: aspnet-todo-api
+    spec:
+      containers:
+      - name: aspnet-todo-api
+        image: ghcr.io/tiagogauziski/aspnet-todo:main
+        imagePullPolicy: Always
+        env:
+        - name: ConnectionStrings__TodoListDatabase
+          valueFrom:
+            secretKeyRef:
+              name: aspnet-todo-secrets
+              key: connectionString
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aspnet-todo-api-service
+  namespace: aspnet-todo
+spec:
+  selector:
+    app: aspnet-todo-api
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: https
+  type: NodePort

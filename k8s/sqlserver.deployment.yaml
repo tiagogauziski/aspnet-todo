@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sqlserver-data-pvc
+  namespace: sqlserver
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlserver-deployment
+  namespace: sqlserver
+spec:
+  replicas: 1
+  selector:
+     matchLabels:
+       app: sqlserver
+  template:
+    metadata:
+      labels:
+        app: sqlserver
+    spec:
+      terminationGracePeriodSeconds: 30
+      hostname: sqlserver-instance
+      securityContext:
+        fsGroup: 10001
+      containers:
+      - name: mssql
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        resources:
+          requests:
+            memory: "2G"
+            cpu: "1000m"
+          limits:
+            memory: "2G"
+            cpu: "2000m"
+        ports:
+        - containerPort: 1433
+        env:
+        - name: MSSQL_PID
+          value: "Developer"
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sqlserver-secrets
+              key: MSSQL_SA_PASSWORD
+        volumeMounts:
+        - name: mssqldb
+          mountPath: /var/opt/mssql
+      volumes:
+      - name: mssqldb
+        persistentVolumeClaim:
+          claimName: sqlserver-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlserver-service
+  namespace: sqlserver
+spec:
+  selector:
+    app: sqlserver
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
+  type: NodePort
