@@ -126,7 +126,7 @@ namespace TodoList.API.Controllers
             return (_context.TodoItems?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private TodoItem DtoToModel(TodoItemDto request)
+        private static TodoItem DtoToModel(TodoItemDto request)
         {
             if (request is null)
             {
@@ -141,7 +141,7 @@ namespace TodoList.API.Controllers
             };
         }
 
-        private TodoItemDto ModelToDto(TodoItem model)
+        private static TodoItemDto ModelToDto(TodoItem model)
         {
             if (model is null)
             {

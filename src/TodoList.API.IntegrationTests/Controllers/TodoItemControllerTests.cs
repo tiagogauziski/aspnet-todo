@@ -38,6 +38,22 @@ namespace TodoList.API.IntegrationTests.Controllers
         }
 
         [Fact]
+        public async Task GetTodoItems_ShouldReturn_OK()
+        {
+            // Arrange
+
+            // Act
+            var response = await _client.GetAsync($"/api/todoitem/");
+
+            // Assert
+            Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+
+            // Verify payload
+            var responseJson = await response.Content.ReadFromJsonAsync<List<TodoItemDto>>();
+            Assert.NotNull(responseJson);
+        }
+
+        [Fact]
         public async Task GetTodoItem_WhenItemExists_ShouldReturn_OK()
         {
             // Arrange
