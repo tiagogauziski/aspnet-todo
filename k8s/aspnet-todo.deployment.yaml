@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: aspnet-todo-api
-        image: ghcr.io/tiagogauziski/aspnet-todo:main
+        image: ghcr.io/tiagogauziski/todolist-api:main
         imagePullPolicy: Always
         env:
         - name: ConnectionStrings__TodoListDatabase
