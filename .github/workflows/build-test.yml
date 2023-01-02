@@ -10,10 +10,10 @@ on:
     branches: [ "main" ]
 
 env:
-  REGISTRY: ghcr.io
-  TODO_API_IMAGE_NAME: todolist.api
-  SOURCE_CODE_PATH: src/
   DOTNET_VERSION: '7.x'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/todolist-api
+  SOURCE_CODE_PATH: src/
   DOCKERFILE_PATH: ./src/TodoList.API.Dockerfile
 
 jobs:
@@ -53,7 +53,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.TODO_API_IMAGE_NAME }}
+          images: ${{ env.IMAGE_NAME }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
