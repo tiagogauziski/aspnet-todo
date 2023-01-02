@@ -45,7 +45,7 @@ namespace TodoList.UI.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Name", "IsCompleted")] TodoModel model)
         {
-            await _todoApiClient.Put(new TodoItem(0, model.Name, model.IsCompleted));
+            await _todoApiClient.Post(new TodoItem(0, model.Name, model.IsCompleted));
 
             try
             {

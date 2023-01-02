@@ -13,14 +13,14 @@ namespace TodoList.UI.MVC.TodoApiClient
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            _httpClient.BaseAddress = new Uri("https://localhost:7128/api/todoitem");
+            _httpClient.BaseAddress = new Uri("https://localhost:7128/api/todoitem/");
         }
 
         public async Task Delete(long id, CancellationToken cancellationToken = default)
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"/{id}", cancellationToken);
+                var response = await _httpClient.DeleteAsync($"{id}", cancellationToken);
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception)
@@ -40,7 +40,7 @@ namespace TodoList.UI.MVC.TodoApiClient
 
         public async Task<TodoItem> GetById(long id, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync($"/{id}", cancellationToken);
+            var response = await _httpClient.GetAsync($"{id}", cancellationToken);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<TodoItem>();
@@ -54,7 +54,7 @@ namespace TodoList.UI.MVC.TodoApiClient
 
         public async Task Put(TodoItem item, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.PostAsJsonAsync("", item, cancellationToken);
+            var response = await _httpClient.PutAsJsonAsync($"{item.Id}", item, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
     }

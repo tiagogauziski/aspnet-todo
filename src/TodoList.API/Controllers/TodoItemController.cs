@@ -88,6 +88,7 @@ namespace TodoList.API.Controllers
         public async Task<ActionResult<TodoItemDto>> PostTodoItem(TodoItemDto request)
         {
             var todoItemModel = DtoToModel(request);
+            todoItemModel.DateAdded = DateTimeOffset.UtcNow;
 
             if (_context.TodoItems == null)
             {
