@@ -34,6 +34,9 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
   todo-api-build-and-push-image:
+    defaults:
+      run:
+        working-directory: ${{ env.SOURCE_CODE_PATH }}
     needs: build-and-test
     runs-on: ubuntu-latest
     permissions:
