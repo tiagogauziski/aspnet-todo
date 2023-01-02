@@ -14,7 +14,6 @@ env:
   TODO_API_IMAGE_NAME: todolist.api
   SOURCE_CODE_PATH: src/
   DOTNET_VERSION: '7.x'
-  DOCKER_CONTEXT: src/
   DOCKERFILE_PATH: ./src/TodoList.API.Dockerfile
 
 jobs:
@@ -59,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           file: ${{ env.DOCKERFILE_PATH }}
-          context: ${{ env.DOCKER_CONTEXT }}
+          context: ${{ env.SOURCE_CODE_PATH }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
