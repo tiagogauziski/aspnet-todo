@@ -34,9 +34,6 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
   todo-api-build-and-push-image:
-    defaults:
-      run:
-        working-directory: ${{ env.SOURCE_CODE_PATH }}
     needs: build-and-test
     runs-on: ubuntu-latest
     permissions:
@@ -60,7 +57,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           file: ./src/TodoList.API.Dockerfile
-          # context: ${{ env.SOURCE_CODE_PATH }}
+          context: ${{ env.SOURCE_CODE_PATH }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
