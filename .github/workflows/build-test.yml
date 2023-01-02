@@ -11,7 +11,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  TODO_API_IMAGE_NAME: todolist-api
   SOURCE_CODE_PATH: src/
   DOTNET_VERSION: '7.x'
 
@@ -33,7 +33,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-  build-and-push-image:
+  todo-api-build-and-push-image:
     needs: build-and-test
     runs-on: ubuntu-latest
     permissions:
@@ -52,10 +52,11 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.TODO_API_IMAGE_NAME }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
+          file: ./TodoList.API.Dockerfile
           context: ${{ env.SOURCE_CODE_PATH }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
