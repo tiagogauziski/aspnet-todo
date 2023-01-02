@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: aspnet-todo
+  name: ui-mvc-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui-mvc
+  template:
+    metadata:
+      labels:
+        app: ui-mvc
+    spec:
+      containers:
+      - name: aspnet-todo-ui-mvc
+        image: ghcr.io/tiagogauziski/todolist-ui-mvc:main
+        imagePullPolicy: Always
+        env:
+        - name: TodoApi__BaseAddress
+          value: "api-service.aspnet-todo.svc.cluster.local:80"
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui-mvc-service
+  namespace: aspnet-todo
+spec:
+  selector:
+    app: ui-mvc
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: https
+  type: NodePort
