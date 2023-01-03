@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: aspnet-todo
-  name: aspnet-todo-api-deployment
+  name: api-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aspnet-todo-api
+      app: api
   template:
     metadata:
       labels:
-        app: aspnet-todo-api
+        app: api
     spec:
       containers:
       - name: aspnet-todo-api
@@ -32,11 +32,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: aspnet-todo-api-service
+  name: api-service
   namespace: aspnet-todo
 spec:
   selector:
-    app: aspnet-todo-api
+    app: api
   ports:
     - name: http
       protocol: TCP
