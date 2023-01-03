@@ -9,6 +9,7 @@ namespace TodoList.UI.MVC
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.Configure<TodoApiOptions>(builder.Configuration.GetSection(TodoApiOptions.TodoApi));
             builder.Services.AddHttpClient<ITodoApiClient, TodoApiClient.TodoApiClient>();
             builder.Services.AddControllersWithViews();
 
