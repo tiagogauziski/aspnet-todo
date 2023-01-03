@@ -17,13 +17,13 @@ namespace TodoList.UI.MVC.TodoApiClient
             _httpClient.BaseAddress = todoApiOptions.Value.BaseAddress;
         }
 
-        public async Task Delete(long id, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(long id, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.DeleteAsync($"{id}", cancellationToken);
+            var response = await _httpClient.DeleteAsync($"api/todoitem/{id}", cancellationToken);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<IEnumerable<TodoItem>> GetAll(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<TodoItem>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.GetAsync("api/todoitem/", cancellationToken);
             response.EnsureSuccessStatusCode();
@@ -31,7 +31,7 @@ namespace TodoList.UI.MVC.TodoApiClient
             return await response.Content.ReadFromJsonAsync<IEnumerable<TodoItem>>();
         }
 
-        public async Task<TodoItem> GetById(long id, CancellationToken cancellationToken = default)
+        public async Task<TodoItem> GetByIdAsync(long id, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.GetAsync($"api/todoitem/{id}", cancellationToken);
             response.EnsureSuccessStatusCode();
@@ -39,13 +39,13 @@ namespace TodoList.UI.MVC.TodoApiClient
             return await response.Content.ReadFromJsonAsync<TodoItem>();
         }
 
-        public async Task Post(TodoItem item, CancellationToken cancellationToken = default)
+        public async Task PostAsync(TodoItem item, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.PostAsJsonAsync("api/todoitem/", item, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task Put(TodoItem item, CancellationToken cancellationToken = default)
+        public async Task PutAsync(TodoItem item, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.PutAsJsonAsync($"api/todoitem/{item.Id}", item, cancellationToken);
             response.EnsureSuccessStatusCode();

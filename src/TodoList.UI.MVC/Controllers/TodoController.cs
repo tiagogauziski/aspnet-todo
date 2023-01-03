@@ -19,7 +19,7 @@ namespace TodoList.UI.MVC.Controllers
         // GET: TodoItemController
         public async Task<ActionResult> Index()
         {
-            var todoItems = await _todoApiClient.GetAll();
+            var todoItems = await _todoApiClient.GetAllAsync();
 
             return View(todoItems
                 .Select(todoItem => new TodoModel() { Id = todoItem.Id, Name = todoItem.Name, IsCompleted = todoItem.IsCompleted })
@@ -29,7 +29,7 @@ namespace TodoList.UI.MVC.Controllers
         // GET: TodoItemController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var todoItem = await _todoApiClient.GetById(id);
+            var todoItem = await _todoApiClient.GetByIdAsync(id);
 
             return View(new TodoModel() { Id = todoItem.Id, Name = todoItem.Name, IsCompleted = todoItem.IsCompleted });
         }
@@ -45,7 +45,7 @@ namespace TodoList.UI.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Name", "IsCompleted")] TodoModel model)
         {
-            await _todoApiClient.Post(new TodoItem(0, model.Name, model.IsCompleted));
+            await _todoApiClient.PostAsync(new TodoItem(0, model.Name, model.IsCompleted));
 
             try
             {
@@ -60,7 +60,7 @@ namespace TodoList.UI.MVC.Controllers
         // GET: TodoItemController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            var todoItem = await _todoApiClient.GetById(id);
+            var todoItem = await _todoApiClient.GetByIdAsync(id);
 
             return View(new TodoModel() { Id = todoItem.Id, Name = todoItem.Name, IsCompleted = todoItem.IsCompleted });
         }
@@ -70,7 +70,7 @@ namespace TodoList.UI.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, [Bind("Name", "IsCompleted")] TodoModel model)
         {
-            await _todoApiClient.Put(new TodoItem(id, model.Name, model.IsCompleted));
+            await _todoApiClient.PutAsync(new TodoItem(id, model.Name, model.IsCompleted));
 
             try
             {
@@ -93,7 +93,7 @@ namespace TodoList.UI.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
-            await _todoApiClient.Delete(id);
+            await _todoApiClient.DeleteAsync(id);
 
             try
             {
