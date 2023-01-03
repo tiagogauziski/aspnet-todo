@@ -54,13 +54,20 @@ namespace TodoList.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, TodoItemDto request)
         {
-            var todoItemModel = DtoToModel(request);
-
-            if (id != todoItemModel.Id)
+            if (id != request.Id)
             {
                 return BadRequest();
             }
 
+            var todoItemModel = await _context.TodoItems.FindAsync(id);
+            if (todoItemModel == null)
+            {
+                return NotFound();
+            }
+
+            todoItemModel.IsCompleted = request.IsCompleted;
+            todoItemModel.Name = request.Name;
+            
             _context.Entry(todoItemModel).State = EntityState.Modified;
 
             try
