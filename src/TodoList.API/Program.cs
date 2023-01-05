@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using TodoList.API.HealthChecks;
 using TodoList.API.Infrastructure.Database;
 
 namespace TodoList.API
@@ -16,6 +18,8 @@ namespace TodoList.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddHealthChecks()
+                .AddCheck<DatabaseHealthCheck>("Database");
 
             var application = builder.Build();
 
@@ -34,10 +38,17 @@ namespace TodoList.API
             }
 
             application.UseHttpsRedirection();
-
             application.UseAuthorization();
-
             application.MapControllers();
+
+            application.MapHealthChecks("/healthz/ready", new HealthCheckOptions()
+            {
+                Predicate = _ => true
+            });
+            application.MapHealthChecks("/healthz/live", new HealthCheckOptions()
+            {
+                Predicate = _ => false
+            });
 
             application.Run();
         }
