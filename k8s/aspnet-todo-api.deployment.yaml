@@ -23,23 +23,23 @@ spec:
             secretKeyRef:
               name: aspnet-todo-secrets
               key: connectionString
-      readinessProbe:
-        httpGet:
-          path: /healthz/ready
-          port: 80
-        initialDelaySeconds: 10
-        timeoutSeconds: 2
-      livenessProbe:
-        httpGet:
-          path: /healthz/live
-          port: 80
-        initialDelaySeconds: 10
-        timeoutSeconds: 2
-      ports:
-        - name: http
-          containerPort: 80
-        - name: https
-          containerPort: 443
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: 80
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /healthz/live
+            port: 80
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        ports:
+          - name: http
+            containerPort: 80
+          - name: https
+            containerPort: 443
 ---
 apiVersion: v1
 kind: Service
