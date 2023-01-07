@@ -50,7 +50,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   todo-ui-mvc-build-and-push-image:
-    needs: build-and-test
     runs-on: ubuntu-latest
     permissions:
       contents: read
