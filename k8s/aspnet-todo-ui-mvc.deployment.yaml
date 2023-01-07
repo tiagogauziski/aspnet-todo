@@ -73,6 +73,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: ingress-service
+            name: ui-mvc-service
             port:
               number: 80
