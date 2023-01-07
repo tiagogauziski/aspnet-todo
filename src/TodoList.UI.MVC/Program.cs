@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using TodoList.UI.MVC.HealthChecks;
 using TodoList.UI.MVC.TodoApiClient;
 
 namespace TodoList.UI.MVC
@@ -12,29 +14,41 @@ namespace TodoList.UI.MVC
             builder.Services.Configure<TodoApiOptions>(builder.Configuration.GetSection(TodoApiOptions.TodoApi));
             builder.Services.AddHttpClient<ITodoApiClient, TodoApiClient.TodoApiClient>();
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHealthChecks()
+                .AddCheck<TodoApiHealthCheck>("TodoApi");
 
-            var app = builder.Build();
+            var application = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            if (!application.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
+                application.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                application.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            application.UseHttpsRedirection();
+            application.UseStaticFiles();
 
-            app.UseRouting();
+            application.UseRouting();
 
-            app.UseAuthorization();
+            application.UseAuthorization();
 
-            app.MapControllerRoute(
+            application.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Todo}/{action=Index}/{id?}");
 
-            app.Run();
+            application.MapHealthChecks("/healthz/ready", new HealthCheckOptions()
+            {
+                Predicate = _ => true
+            });
+
+            application.MapHealthChecks("/healthz/live", new HealthCheckOptions()
+            {
+                Predicate = _ => false
+            });
+
+            application.Run();
         }
     }
 }

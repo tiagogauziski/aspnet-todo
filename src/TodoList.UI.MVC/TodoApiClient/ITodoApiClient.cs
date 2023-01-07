@@ -9,5 +9,6 @@ namespace TodoList.UI.MVC.TodoApiClient
         Task PutAsync(TodoItem item, CancellationToken cancellationToken = default);
         Task PostAsync(TodoItem item, CancellationToken cancellationToken = default);
         Task DeleteAsync(long id, CancellationToken cancellationToken = default);
+        Task IsHealthyAsync(CancellationToken cancellationToken = default);
     }
 }

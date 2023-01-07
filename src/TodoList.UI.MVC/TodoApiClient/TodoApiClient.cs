@@ -39,6 +39,12 @@ namespace TodoList.UI.MVC.TodoApiClient
             return await response.Content.ReadFromJsonAsync<TodoItem>();
         }
 
+        public async Task IsHealthyAsync(CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.GetAsync($"healthz/live", cancellationToken);
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task PostAsync(TodoItem item, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.PostAsJsonAsync("api/todoitem/", item, cancellationToken);
