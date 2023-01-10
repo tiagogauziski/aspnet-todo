@@ -1,4 +1,4 @@
 apiVersion: v1
-kind: Namesapce
+kind: Namespace
 metatada:
   name: sqlserver
