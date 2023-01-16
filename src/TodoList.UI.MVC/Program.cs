@@ -29,6 +29,7 @@ namespace TodoList.UI.MVC
 
             application.UseHttpsRedirection();
             application.UseStaticFiles();
+            application.UseForwardedHeaders();
 
             application.UseRouting();
 

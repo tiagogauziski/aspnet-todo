@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
+﻿using Microsoft.AspNetCore.Mvc;
 using TodoList.UI.MVC.Models;
 using TodoList.UI.MVC.TodoApiClient;
 using TodoList.UI.MVC.TodoApiClient.Contracts;
@@ -45,6 +43,11 @@ namespace TodoList.UI.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Name", "IsCompleted")] TodoModel model)
         {
+            if (model is null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
             await _todoApiClient.PostAsync(new TodoItem(0, model.Name, model.IsCompleted));
 
             try
