@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Threading;
+using TodoList.UI.MVC.Options;
 using TodoList.UI.MVC.TodoApiClient.Contracts;
 
 namespace TodoList.UI.MVC.TodoApiClient

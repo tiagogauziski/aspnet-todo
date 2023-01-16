@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using TodoList.UI.MVC.Extentions;
 using TodoList.UI.MVC.HealthChecks;
+using TodoList.UI.MVC.Options;
 using TodoList.UI.MVC.TodoApiClient;
 
 namespace TodoList.UI.MVC
@@ -34,6 +36,8 @@ namespace TodoList.UI.MVC
             application.UseRouting();
 
             application.UseAuthorization();
+
+            application.MapDebugPage("/Debug");
 
             application.MapControllerRoute(
                 name: "default",

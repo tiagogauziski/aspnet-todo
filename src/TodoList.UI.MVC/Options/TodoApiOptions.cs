@@ -1,4 +1,4 @@
-﻿namespace TodoList.UI.MVC
+﻿namespace TodoList.UI.MVC.Options
 {
     public class TodoApiOptions
     {
