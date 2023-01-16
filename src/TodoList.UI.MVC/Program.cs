@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Options;
 using TodoList.UI.MVC.Extentions;
 using TodoList.UI.MVC.HealthChecks;
 using TodoList.UI.MVC.Options;
@@ -15,17 +16,25 @@ namespace TodoList.UI.MVC
 
             // Add services to the container.
             builder.Services.Configure<TodoApiOptions>(builder.Configuration.GetSection(TodoApiOptions.TodoApi));
-            builder.Services.AddHttpClient<ITodoApiClient, TodoApiClient.TodoApiClient>();
+            builder.Services.Configure<TodoApplicationOptions>(builder.Configuration.GetSection(TodoApplicationOptions.TodoApplication));
             builder.Services.Configure<ForwardedHeadersOptions>(options =>
             {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.ForwardedHeaders = ForwardedHeaders.All;
             });
+            builder.Services.AddHttpClient<ITodoApiClient, TodoApiClient.TodoApiClient>();
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddHealthChecks()
                 .AddCheck<TodoApiHealthCheck>("TodoApi");
 
             var application = builder.Build();
+
+            var applicationOptions = application.Services.GetRequiredService<IOptions<TodoApplicationOptions>>();
+            if (applicationOptions is not null)
+            {
+                application.UsePathBase(applicationOptions.Value.BasePath);
+            }
+
             application.UseForwardedHeaders();
 
             // Configure the HTTP request pipeline.

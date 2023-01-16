@@ -20,6 +20,8 @@ spec:
         env:
         - name: TodoApi__BaseAddress
           value: "http://api-service.aspnet-todo.svc.cluster.local:80/"
+        - name: TodoApplication__BasePath
+          value: "/aspnet-todo/"
         readinessProbe:
           httpGet:
             path: /healthz/ready
@@ -63,13 +65,13 @@ metadata:
   name: ui-mvc-ingress
   namespace: aspnet-todo
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
-      - path: /aspnet-todo
+      - path: /aspnet-todo(/|$)(.*)
         pathType: Prefix
         backend:
           service:
