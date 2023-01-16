@@ -21,7 +21,7 @@ spec:
         - name: TodoApi__BaseAddress
           value: "http://api-service.aspnet-todo.svc.cluster.local:80/"
         - name: TodoApplication__BasePath
-          value: "/aspnet-todo/"
+          value: "/aspnet-todo"
         readinessProbe:
           httpGet:
             path: /healthz/ready
