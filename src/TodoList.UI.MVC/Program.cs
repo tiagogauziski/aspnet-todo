@@ -32,7 +32,11 @@ namespace TodoList.UI.MVC
             var applicationOptions = application.Services.GetRequiredService<IOptions<TodoApplicationOptions>>();
             if (applicationOptions is not null)
             {
-                application.UsePathBase(applicationOptions.Value.BasePath);
+                application.Use((context, next) =>
+                {
+                    context.Request.PathBase = new PathString(applicationOptions.Value.BasePath);
+                    return next(context);
+                });
             }
 
             application.UseForwardedHeaders();
