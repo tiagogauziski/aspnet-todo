@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: aspnet-todo
   name: ui-mvc-deployment
 spec:
   replicas: 1
@@ -44,7 +43,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ui-mvc-service
-  namespace: aspnet-todo
 spec:
   selector:
     app: ui-mvc
@@ -63,7 +61,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ui-mvc-ingress
-  namespace: aspnet-todo
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
