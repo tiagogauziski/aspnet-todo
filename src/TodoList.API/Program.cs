@@ -1,5 +1,10 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using System.Diagnostics.Metrics;
 using TodoList.API.HealthChecks;
 using TodoList.API.Infrastructure.Database;
 
@@ -20,6 +25,26 @@ namespace TodoList.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddHealthChecks()
                 .AddCheck<DatabaseHealthCheck>("Database");
+
+            builder.Services
+                .AddOpenTelemetry()
+                .ConfigureResource(builder => ResourceBuilder.CreateDefault().AddService(serviceName: "TodoApi"))
+                .WithMetrics(builder =>
+                {
+                    builder
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddPrometheusExporter();
+                })
+                .WithTracing(builder =>
+                {
+                    builder
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddSqlClientInstrumentation()
+                        .AddOtlpExporter();
+                })
+                .StartWithHost(); ;
 
             var application = builder.Build();
 
@@ -49,6 +74,8 @@ namespace TodoList.API
             {
                 Predicate = _ => false
             });
+
+            application.UseOpenTelemetryPrometheusScrapingEndpoint();
 
             application.Run();
         }

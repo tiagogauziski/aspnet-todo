@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Options;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using TodoList.UI.MVC.Extentions;
 using TodoList.UI.MVC.HealthChecks;
 using TodoList.UI.MVC.Options;
@@ -25,7 +29,28 @@ namespace TodoList.UI.MVC
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddHealthChecks()
-                .AddCheck<TodoApiHealthCheck>("TodoApi");
+                .AddCheck<TodoApiHealthCheck>("TodoUiMvc");
+
+            builder.Services
+                .AddOpenTelemetry()
+                .ConfigureResource(builder => ResourceBuilder.CreateDefault().AddService(serviceName: "TodoApi"))
+                .WithMetrics(builder =>
+                {
+                    builder
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddPrometheusExporter();
+                })
+                .WithTracing(builder =>
+                {
+                    builder
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddSqlClientInstrumentation()
+                        .AddOtlpExporter();
+                })
+                .StartWithHost();
+
 
             var application = builder.Build();
 
@@ -71,6 +96,8 @@ namespace TodoList.UI.MVC
             {
                 Predicate = _ => false
             });
+
+            application.UseOpenTelemetryPrometheusScrapingEndpoint();
 
             application.Run();
         }
