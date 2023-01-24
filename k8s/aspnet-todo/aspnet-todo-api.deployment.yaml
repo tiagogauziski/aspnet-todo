@@ -49,6 +49,7 @@ metadata:
   name: api-service
   annotations:
     prometheus.io/scrape: "true"
+    prometheus.io/port: 80
 spec:
   selector:
     app: api
