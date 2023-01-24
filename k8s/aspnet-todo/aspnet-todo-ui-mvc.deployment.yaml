@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ui-mvc-deployment
+  annotations:
+    prometheus.io/scrape: "true"
 spec:
   replicas: 1
   selector:
