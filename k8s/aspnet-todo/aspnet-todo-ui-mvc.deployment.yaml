@@ -4,6 +4,7 @@ metadata:
   name: ui-mvc-deployment
   annotations:
     prometheus.io/scrape: "true"
+    sidecar.jaegertracing.io/inject: "true"
 spec:
   replicas: 1
   selector:
