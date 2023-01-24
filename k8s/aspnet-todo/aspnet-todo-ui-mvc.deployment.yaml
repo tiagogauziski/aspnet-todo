@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: ui-mvc-deployment
   annotations:
-    prometheus.io/scrape: "true"
     sidecar.jaegertracing.io/inject: "true"
 spec:
   replicas: 1
@@ -46,6 +45,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ui-mvc-service
+  annotations:
+    prometheus.io/scrape: "true"
 spec:
   selector:
     app: ui-mvc
