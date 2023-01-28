@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: aspnet-todo-mvc-ui
+  labels:
+    name: aspnet-todo-mvc-ui
+spec:
+  selector:
+    matchLabels:
+      app: mvc-ui
+  namespaceSelector:
+    matchNames:
+    - aspnet-todo
+  endpoints:
+  - port: "http"
