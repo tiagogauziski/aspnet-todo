@@ -45,9 +45,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ui-mvc-service
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "80"
+  labels:
+    app: ui-mvc
 spec:
   selector:
     app: ui-mvc
