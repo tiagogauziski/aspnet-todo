@@ -31,23 +31,35 @@ namespace TodoList.UI.MVC
             builder.Services.AddHealthChecks()
                 .AddCheck<TodoApiHealthCheck>("TodoUiMvc");
 
+            OpenTelemetryOptions? openTelemetryOptions = builder.Configuration.GetSection(OpenTelemetryOptions.OpenTelemetry).Get<OpenTelemetryOptions>();
+            var prometheusEnabled = openTelemetryOptions?.Prometheus?.Enabled;
             builder.Services
                 .AddOpenTelemetry()
                 .ConfigureResource(builder => ResourceBuilder.CreateDefault().AddService(serviceName: "TodoApi"))
-                .WithMetrics(builder =>
+                .WithMetrics(meterProviderBuilder =>
                 {
-                    builder
+                    meterProviderBuilder
                         .AddAspNetCoreInstrumentation()
-                        .AddHttpClientInstrumentation()
-                        .AddPrometheusExporter();
+                        .AddHttpClientInstrumentation();
+
+                    if (prometheusEnabled.GetValueOrDefault())
+                    {
+                        meterProviderBuilder.AddPrometheusExporter();
+                    }
                 })
-                .WithTracing(builder =>
+                .WithTracing(traceProviderBuilder =>
                 {
-                    builder
+                    traceProviderBuilder
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
                         .AddSqlClientInstrumentation()
-                        .AddOtlpExporter();
+                        .SetSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(0.1)));
+
+                    bool? jaegerEnabled = openTelemetryOptions?.Jaeger?.Enabled;
+                    if (jaegerEnabled.GetValueOrDefault())
+                    {
+                        traceProviderBuilder.AddJaegerExporter();
+                    }
                 })
                 .StartWithHost();
 

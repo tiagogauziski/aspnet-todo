@@ -7,6 +7,7 @@ using OpenTelemetry.Trace;
 using System.Diagnostics.Metrics;
 using TodoList.API.HealthChecks;
 using TodoList.API.Infrastructure.Database;
+using TodoList.API.Options;
 
 namespace TodoList.API
 {
@@ -26,25 +27,37 @@ namespace TodoList.API
             builder.Services.AddHealthChecks()
                 .AddCheck<DatabaseHealthCheck>("Database");
 
+            OpenTelemetryOptions? openTelemetryOptions = builder.Configuration.GetSection(OpenTelemetryOptions.OpenTelemetry).Get<OpenTelemetryOptions>();
+            var prometheusEnabled = openTelemetryOptions?.Prometheus?.Enabled;
             builder.Services
                 .AddOpenTelemetry()
-                .ConfigureResource(builder => ResourceBuilder.CreateDefault().AddService(serviceName: "TodoApi"))
-                .WithMetrics(builder =>
+                .ConfigureResource(builder => ResourceBuilder.CreateDefault().AddService(serviceName: "TodoApi", serviceNamespace: "TodoList"))
+                .WithMetrics(meterProviderBuilder =>
                 {
-                    builder
+                    meterProviderBuilder
                         .AddAspNetCoreInstrumentation()
-                        .AddHttpClientInstrumentation()
-                        .AddPrometheusExporter();
+                        .AddHttpClientInstrumentation();
+
+                    if (prometheusEnabled.GetValueOrDefault())
+                    {
+                        meterProviderBuilder.AddPrometheusExporter();
+                    }
                 })
-                .WithTracing(builder =>
+                .WithTracing(traceProviderBuilder =>
                 {
-                    builder
+                    traceProviderBuilder
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
                         .AddSqlClientInstrumentation()
-                        .AddOtlpExporter();
+                        .SetSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(0.1)));
+
+                    bool? jaegerEnabled = openTelemetryOptions?.Jaeger?.Enabled;
+                    if (jaegerEnabled.GetValueOrDefault())
+                    {
+                        traceProviderBuilder.AddJaegerExporter();
+                    }
                 })
-                .StartWithHost(); ;
+                .StartWithHost();
 
             var application = builder.Build();
 
@@ -74,8 +87,11 @@ namespace TodoList.API
             {
                 Predicate = _ => false
             });
-
-            application.UseOpenTelemetryPrometheusScrapingEndpoint();
+            
+            if (prometheusEnabled.GetValueOrDefault())
+            {
+                application.UseOpenTelemetryPrometheusScrapingEndpoint();
+            }
 
             application.Run();
         }
