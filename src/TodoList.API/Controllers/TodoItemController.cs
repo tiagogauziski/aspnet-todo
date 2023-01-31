@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoList.API.DataTransferObjects;
+using TodoList.API.Diagnostics;
 using TodoList.API.Infrastructure.Database;
 using TodoList.API.Models;
 
@@ -70,22 +71,25 @@ namespace TodoList.API.Controllers
             
             _context.Entry(todoItemModel).State = EntityState.Modified;
 
-            try
+            using (var activity = TodoApiActivitySource.Source.StartActivity("Edit Todo"))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodoItemExists(id))
+                try
                 {
-                    return NotFound();
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!TodoItemExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
-
+           
             return NoContent();
         }
 
@@ -101,8 +105,11 @@ namespace TodoList.API.Controllers
             {
                 return Problem("Entity set 'TodoContext.TodoItems'  is null.");
             }
-            _context.TodoItems.Add(todoItemModel);
-            await _context.SaveChangesAsync();
+            using (var activity = TodoApiActivitySource.Source.StartActivity("Create Todo"))
+            {
+                _context.TodoItems.Add(todoItemModel);
+                await _context.SaveChangesAsync();
+            }
 
             var response = ModelToDto(todoItemModel);
 
@@ -123,8 +130,11 @@ namespace TodoList.API.Controllers
                 return NotFound();
             }
 
-            _context.TodoItems.Remove(todoItem);
-            await _context.SaveChangesAsync();
+            using (var activity = TodoApiActivitySource.Source.StartActivity("Delete Todo"))
+            {
+                _context.TodoItems.Remove(todoItem);
+                await _context.SaveChangesAsync();
+            }
 
             return NoContent();
         }

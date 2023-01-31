@@ -4,7 +4,7 @@ using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using System.Diagnostics.Metrics;
+using TodoList.API.Diagnostics;
 using TodoList.API.HealthChecks;
 using TodoList.API.Infrastructure.Database;
 using TodoList.API.Options;
@@ -49,6 +49,7 @@ namespace TodoList.API
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
                         .AddSqlClientInstrumentation()
+                        .AddSource(TodoApiActivitySource.ActivitySourceName)
                         .SetSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(0.1)));
 
                     bool? jaegerEnabled = openTelemetryOptions?.Jaeger?.Enabled;
