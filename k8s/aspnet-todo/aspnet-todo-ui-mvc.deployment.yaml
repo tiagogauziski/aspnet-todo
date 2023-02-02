@@ -60,22 +60,3 @@ spec:
       port: 443
       targetPort: https
   type: NodePort
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ui-mvc-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-spec:
-  ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - path: /aspnet-todo(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: ui-mvc-service
-            port:
-              number: 80
