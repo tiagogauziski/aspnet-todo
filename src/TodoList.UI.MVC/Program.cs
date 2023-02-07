@@ -5,6 +5,7 @@ using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Prometheus;
 using TodoList.UI.MVC.Extentions;
 using TodoList.UI.MVC.HealthChecks;
 using TodoList.UI.MVC.Options;
@@ -36,17 +37,6 @@ namespace TodoList.UI.MVC
             builder.Services
                 .AddOpenTelemetry()
                 .ConfigureResource(builder => ResourceBuilder.CreateDefault().AddService(serviceName: "TodoApi"))
-                .WithMetrics(meterProviderBuilder =>
-                {
-                    meterProviderBuilder
-                        .AddAspNetCoreInstrumentation()
-                        .AddHttpClientInstrumentation();
-
-                    if (prometheusEnabled.GetValueOrDefault())
-                    {
-                        meterProviderBuilder.AddPrometheusExporter();
-                    }
-                })
                 .WithTracing(traceProviderBuilder =>
                 {
                     traceProviderBuilder
@@ -109,7 +99,11 @@ namespace TodoList.UI.MVC
                 Predicate = _ => false
             });
 
-            application.UseOpenTelemetryPrometheusScrapingEndpoint();
+            if (prometheusEnabled.GetValueOrDefault())
+            {
+                application.MapMetrics();
+                application.UseHttpMetrics();
+            }
 
             application.Run();
         }
