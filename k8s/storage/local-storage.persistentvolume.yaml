@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: k8s-worker1-local-storage
+  name: local-storage
 spec:
   capacity:
     storage: 2Gi
@@ -10,7 +10,7 @@ spec:
   storageClassName: local-storage
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /mnt/k8s-worker1-local-storage
+    path: /mnt/k8s-local-storage
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -21,3 +21,4 @@ spec:
           # I've bound this PV to a specific node. This way we can keep the data retained on a single node, as it's set to a local path on the node.
           # Kubernetes will make sure to schedule pods into this node only to consume the storage.
           - k8s-worker1 
+          - raspberrypi
