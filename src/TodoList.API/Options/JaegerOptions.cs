@@ -1,7 +1,6 @@
-﻿namespace TodoList.API.Options
+﻿namespace TodoList.API.Options;
+
+public class JaegerOptions
 {
-    public class JaegerOptions
-    {
-        public bool? Enabled { get; set; }
-    }
+    public bool? Enabled { get; set; }
 }

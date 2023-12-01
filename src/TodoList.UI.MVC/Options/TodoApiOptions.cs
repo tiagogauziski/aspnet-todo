@@ -1,9 +1,8 @@
-﻿namespace TodoList.UI.MVC.Options
-{
-    public class TodoApiOptions
-    {
-        public const string TodoApi = "TodoApi";
+﻿namespace TodoList.UI.MVC.Options;
 
-        public Uri? BaseAddress { get; set; }
-    }
+public class TodoApiOptions
+{
+    public const string TodoApi = "TodoApi";
+
+    public Uri? BaseAddress { get; set; }
 }

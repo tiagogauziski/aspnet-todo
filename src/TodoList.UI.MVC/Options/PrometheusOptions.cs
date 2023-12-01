@@ -1,7 +1,6 @@
-﻿namespace TodoList.UI.MVC.Options
+﻿namespace TodoList.UI.MVC.Options;
+
+public class PrometheusOptions
 {
-    public class PrometheusOptions
-    {
-        public bool? Enabled { get; set; }
-    }
+    public bool? Enabled { get; set; }
 }

@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TodoList.UI.MVC.Models
+namespace TodoList.UI.MVC.Models;
+
+public class TodoModel
 {
-    public class TodoModel
-    {
-        [Key]
-        public long Id { get; set; }
+    [Key]
+    public long Id { get; set; }
 
-        [Required]
-        public string? Name { get; set; }
+    [Required]
+    public string? Name { get; set; }
 
-        [Display(Name = "Is Completed?")]
-        public bool IsCompleted { get; set; }
-    }
+    [Display(Name = "Is Completed?")]
+    public bool IsCompleted { get; set; }
 }
