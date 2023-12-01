@@ -29,15 +29,15 @@ namespace TodoList.UI.MVC.TodoApiClient
             var response = await _httpClient.GetAsync("api/todoitem/", cancellationToken);
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<IEnumerable<TodoItem>>();
+            return await response.Content.ReadFromJsonAsync<IEnumerable<TodoItem>>(cancellationToken: cancellationToken) ?? [];
         }
 
-        public async Task<TodoItem> GetByIdAsync(long id, CancellationToken cancellationToken = default)
+        public async Task<TodoItem?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.GetAsync($"api/todoitem/{id}", cancellationToken);
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<TodoItem>();
+            return await response.Content.ReadFromJsonAsync<TodoItem>(cancellationToken: cancellationToken);
         }
 
         public async Task IsHealthyAsync(CancellationToken cancellationToken = default)

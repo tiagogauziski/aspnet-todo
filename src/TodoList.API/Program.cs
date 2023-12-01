@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Prometheus;
 using TodoList.API.Diagnostics;
 using TodoList.API.HealthChecks;
 using TodoList.API.Infrastructure.Database;
@@ -39,16 +37,14 @@ namespace TodoList.API
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
                         .AddSqlClientInstrumentation()
-                        .AddSource(TodoApiActivitySource.ActivitySourceName)
-                        .SetSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(0.1)));
-
-                    bool? jaegerEnabled = openTelemetryOptions?.Jaeger?.Enabled;
-                    if (jaegerEnabled.GetValueOrDefault())
-                    {
-                        traceProviderBuilder.AddJaegerExporter();
-                    }
+                        .AddSource(TodoApiActivitySource.ActivitySourceName);
                 })
-                .StartWithHost();
+                .WithMetrics(meterProviderBuilder =>
+                {
+                    meterProviderBuilder
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation();
+                });
 
             var application = builder.Build();
 
@@ -78,12 +74,6 @@ namespace TodoList.API
             {
                 Predicate = _ => false
             });
-            
-            if (prometheusEnabled.GetValueOrDefault())
-            {
-                application.MapMetrics();
-                application.UseHttpMetrics();
-            }
 
             application.Run();
         }

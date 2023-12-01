@@ -4,6 +4,6 @@
     {
         public const string TodoApi = "TodoApi";
 
-        public Uri BaseAddress { get; set; }
+        public Uri? BaseAddress { get; set; }
     }
 }
